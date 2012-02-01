@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uk.co.turingatemyhamster</groupId>
-    <artifactId>tab-s</artifactId>
+    <artifactId>table-s</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <name>Tab-S</name>
+    <name>Table-S</name>
     <description>Tabulated data IO for scala.</description>
     <inceptionYear>2012</inceptionYear>
-    <url>http://drdozer.github.com/tab-s</url>
+    <url>http://drdozer.github.com/table-s</url>
 
     <developers>
         <developer>
@@ -36,7 +36,7 @@
 
     <issueManagement>
         <system>GitHub</system>
-        <url>http://github.com/drdozer/tab-s/issues</url>
+        <url>http://github.com/drdozer/table-s/issues</url>
     </issueManagement>
 
     <properties>
@@ -257,13 +257,13 @@
     <distributionManagement>
         <site>
             <id>github-project-site</id>
-            <url>gitsite:git@github.com/drdozer/tab-s.git</url>
+            <url>gitsite:git@github.com/drdozer/table-s.git</url>
         </site>
     </distributionManagement>
 
     <scm>
-        <developerConnection>scm:git:git://github.com/drdozer/tab-s.git</developerConnection>
-        <url>http://github.com/drdozer/tab-s</url>
+        <developerConnection>scm:git:git://github.com/drdozer/table-s.git</developerConnection>
+        <url>http://github.com/drdozer/table-s</url>
     </scm>
 
 </project>

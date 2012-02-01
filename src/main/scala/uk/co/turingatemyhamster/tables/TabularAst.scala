@@ -34,6 +34,9 @@ case class HeaderRow(headers: Iterable[Cell])
 case class BodyRow(cells: Iterable[Cell])
 case class Table(headers: Option[HeaderRow], rows: Iterable[BodyRow])
 
+
+
+
 trait TabularAstConstructors extends TabularAst with QuotedCellsTabularConstructors
 
 trait TabularAstBuilder extends TabularAstConstructors {

@@ -43,9 +43,13 @@ trait QuotedCellsTabularConstructors extends TabularConstructors with QuotedCell
 
 trait TabularParser extends TabularConstructors with RegexParsers {
 
+  override def skipWhitespace = false
+
   def cell: Parser[T_Cell]
 
-  lazy val cells: Parser[List[T_Cell]] = repsep(cell, cellSep)
+  val newline: Parser[String] = "\n"
+
+  lazy val cells: Parser[List[T_Cell]] = repsep(cell, cellSep) <~ newline
 
   lazy val headerRow: Parser[T_HeaderRow] = cells ^^ handle_headerRow
 

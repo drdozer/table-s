@@ -19,6 +19,14 @@ trait TabularAst extends Tabular with QuotedCells {
 }
 
 sealed trait Cell
+
+object Cell {
+  def unapply(c: Cell): Option[String] = c match {
+    case UnquotedCell(s) => Some(s)
+    case QuotedCell(s) => Some(s)
+  }
+}
+
 case class UnquotedCell(s: String) extends Cell
 case class QuotedCell(s: String) extends Cell
 

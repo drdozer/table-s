@@ -30,9 +30,9 @@ object Cell {
 case class UnquotedCell(s: String) extends Cell
 case class QuotedCell(s: String) extends Cell
 
-case class HeaderRow(headers: Traversable[Cell])
-case class BodyRow(cells: Traversable[Cell])
-case class Table(headers: Option[HeaderRow], rows: Traversable[BodyRow])
+case class HeaderRow(headers: Iterable[Cell])
+case class BodyRow(cells: Iterable[Cell])
+case class Table(headers: Option[HeaderRow], rows: Iterable[BodyRow])
 
 trait TabularAstConstructors extends TabularAst with QuotedCellsTabularConstructors
 
@@ -44,13 +44,13 @@ trait TabularAstBuilder extends TabularAstConstructors {
   def handle_unquotedCell(s: String) =
     UnquotedCell(s)
 
-  def handle_headerRow(headers: Traversable[TabularAstBuilder#T_Cell]) =
+  def handle_headerRow(headers: Iterable[TabularAstBuilder#T_Cell]) =
     HeaderRow(headers)
 
-  def handle_bodyRow(cells: Traversable[TabularAstBuilder#T_Cell]) =
+  def handle_bodyRow(cells: Iterable[TabularAstBuilder#T_Cell]) =
     BodyRow(cells)
 
-  def handle_table(header: Option[TabularAstBuilder#T_HeaderRow], rows: Traversable[TabularAstBuilder#T_BodyRow]) =
+  def handle_table(header: Option[TabularAstBuilder#T_HeaderRow], rows: Iterable[TabularAstBuilder#T_BodyRow]) =
     Table(header, rows)
 }
 

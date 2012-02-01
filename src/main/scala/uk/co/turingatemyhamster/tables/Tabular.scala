@@ -26,11 +26,11 @@ trait QuotedCells extends Tabular {
 
 trait TabularConstructors extends Tabular {
 
-  def handle_headerRow(headers: Traversable[T_Cell]): T_HeaderRow
+  def handle_headerRow(headers: Iterable[T_Cell]): T_HeaderRow
 
-  def handle_bodyRow(cells: Traversable[T_Cell]): T_BodyRow
+  def handle_bodyRow(cells: Iterable[T_Cell]): T_BodyRow
 
-  def handle_table(header: Option[T_HeaderRow], rows: Traversable[T_BodyRow]): T_Table
+  def handle_table(header: Option[T_HeaderRow], rows: Iterable[T_BodyRow]): T_Table
 }
 
 trait QuotedCellsTabularConstructors extends TabularConstructors with QuotedCells {
@@ -95,11 +95,11 @@ trait QuotedCellsTabularTabularParser extends TabularParser with QuotedCellsTabu
 
 trait TabularDestructors extends Tabular {
 
-  def decompose_headerRow(headers: T_HeaderRow): Traversable[T_Cell]
+  def decompose_headerRow(headers: T_HeaderRow): Iterable[T_Cell]
 
-  def decompose_bodyRow(row: T_BodyRow): Traversable[T_Cell]
+  def decompose_bodyRow(row: T_BodyRow): Iterable[T_Cell]
 
-  def decompose_table(table: T_Table): (Option[T_HeaderRow], Traversable[T_BodyRow])
+  def decompose_table(table: T_Table): (Option[T_HeaderRow], Iterable[T_BodyRow])
 
 }
 
@@ -125,7 +125,7 @@ trait TabularRenderer extends TabularDestructors {
     out append cellSep
   }
 
-  def render_cells(cells: Traversable[T_Cell]) {
+  def render_cells(cells: Iterable[T_Cell]) {
     if (!cells.isEmpty) {
       val first = cells.head
       val rest = cells.tail

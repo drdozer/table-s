@@ -1,0 +1,4 @@
+Scala API for tabulated data IO.
+
+I keep needing to read/write CSV, tab-delimited text, and other tabular formats.
+I've got fed up of copy/paste/edit forks of the code, so decided to make a library.

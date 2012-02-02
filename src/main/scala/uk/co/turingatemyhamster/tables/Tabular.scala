@@ -12,6 +12,7 @@ trait Tabular {
   type T_Table
 
   def cellSep: String
+  def newline: String = "\n"
 
 }
 
@@ -47,9 +48,9 @@ trait TabularParser extends TabularConstructors with RegexParsers {
 
   def cell: Parser[T_Cell]
 
-  val newline: Parser[String] = "\n"
+  val nl: Parser[String] = newline
 
-  lazy val cells: Parser[List[T_Cell]] = repsep(cell, cellSep) <~ newline
+  lazy val cells: Parser[List[T_Cell]] = repsep(cell, cellSep) <~ nl
 
   lazy val headerRow: Parser[T_HeaderRow] = cells ^^ handle_headerRow
 
@@ -85,15 +86,16 @@ trait TabularParser extends TabularConstructors with RegexParsers {
 
 trait QuotedCellsTabularTabularParser extends TabularParser with QuotedCellsTabularConstructors {
 
-  lazy val quotedStringWithoutQuotes: Parser[String] = (quote + "([" + quote + "]*)" + quote).r -> 1
+  lazy val quotedStringWithoutQuotes: Parser[String] = (quote + "(([^" + quote + newline + "]|(" + quote + quote + "))*)" + quote).r -> 1 ^^
+    (_.replace(quote + quote, quote))
 
-  lazy val unquotedString: Parser[String] = ("[^" + cellSep + "]*").r
+  lazy val unquotedStringAsIs: Parser[String] = ("[^" + cellSep + quote + newline + "]*").r
 
   lazy val quotedString: Parser[T_QuotedCell] = quotedStringWithoutQuotes ^^ handle_quotedCell
 
-  lazy val rawString: Parser[T_UnquotedCell] = unquotedString ^^ handle_unquotedCell
+  lazy val unquotedString: Parser[T_UnquotedCell] = unquotedStringAsIs ^^ handle_unquotedCell
 
-  lazy val cell = quotedString | rawString
+  lazy val cell = quotedString | unquotedString
 
 }
 
@@ -117,8 +119,8 @@ trait QuotedCellsTabularDestructors extends TabularDestructors with QuotedCells 
 
 trait TabularRenderer extends TabularDestructors {
 
-  private def nl() {
-    out append "\n"
+  def nl() {
+    out append newline
   }
 
   def out: Appendable
@@ -141,7 +143,7 @@ trait TabularRenderer extends TabularDestructors {
       }
     }
 
-    nl
+    nl()
   }
 
   def render_headerRow(headers: T_HeaderRow) {

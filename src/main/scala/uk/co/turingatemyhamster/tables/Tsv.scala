@@ -6,16 +6,15 @@ package uk.co.turingatemyhamster.tables
  * @author Matthew Pocock
  */
 
-trait Tsv {
+trait Tsv extends Tabular {
   def cellSep = "\t"
-
-  def quote = "\""
 }
 
-trait TsvTabularParser extends TabularParser with Tsv
+trait TsvTabularParser extends Tsv with TabularParser with CharSequenceCellsParser
 
-class TsvTabularAstParser extends TsvTabularParser with TabularAstParser
+class TsvTabularAstParser extends TsvTabularParser with TabularAstBuilder
 
-trait TsvTabularRenderer extends TabularRenderer with Tsv
+trait TsvTabularRenderer extends Tsv with TabularRenderer
 
-class TsvTabularAstRenderer(val out: Appendable) extends TsvTabularRenderer with TabularAstRenderer
+class TsvTabularAstRenderer(val out: Appendable)
+  extends TsvTabularRenderer with TabularAstRenderer with CharSequenceCellsRenderer

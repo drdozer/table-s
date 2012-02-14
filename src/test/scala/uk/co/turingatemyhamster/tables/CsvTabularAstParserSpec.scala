@@ -86,7 +86,7 @@ class CsvTabularAstParserSpec extends Specification with ParserMatchers {
     "parse the first example row" in {
       bodyRow must succeedOn(
 """... rides again,Idiom,,,,"ride, ",,"used to indicate that someone or something has reappeared, especially unexpectedly and with renewed vigour",,,
-""").withResult(BodyRow(List(
+""").withResult(BodyRow[Cell](List(
         UnquotedCell("... rides again"),
         UnquotedCell("Idiom"),
         UnquotedCell(""),
@@ -103,7 +103,7 @@ class CsvTabularAstParserSpec extends Specification with ParserMatchers {
     "parse the second example row" in {
       bodyRow must succeedOn(
 """... rides again,Idiom,,,,"again, ride",,,,,
-""").withResult(BodyRow(List(
+""").withResult(BodyRow[Cell](List(
         UnquotedCell("... rides again"),
         UnquotedCell("Idiom"),
         UnquotedCell(""),

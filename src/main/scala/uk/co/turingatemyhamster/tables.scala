@@ -5,7 +5,7 @@ import java.io.Reader
 
 package object tables {
 
-  def parseCsv(in: Reader, requireHeaders: Boolean = true): Table = {
+  def parseCsv(in: Reader, requireHeaders: Boolean = true): Table[Cell] = {
 
     val csv = new CsvTabularAstParser
     import csv._

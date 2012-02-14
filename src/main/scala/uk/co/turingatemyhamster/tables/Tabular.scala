@@ -4,26 +4,23 @@ import java.lang.Appendable
 import util.parsing.combinator.RegexParsers
 import util.matching.Regex
 
-trait Tabular {
+trait Cellular {
 
   type T_Cell
+
+
+  def cellSep: String
+  def newline: String = "\n"
+}
+
+trait Tabular extends Cellular {
+
   type T_HeaderRow
   type T_BodyRow
   type T_Table
 
-  def cellSep: String
-  def newline: String = "\n"
-
 }
 
-trait QuotedCells extends Tabular {
-
-  type T_QuotedCell <: T_Cell
-  type T_UnquotedCell <: T_Cell
-
-  def quote: String
-
-}
 
 trait TabularConstructors extends Tabular {
 
@@ -34,15 +31,28 @@ trait TabularConstructors extends Tabular {
   def handle_table(header: Option[T_HeaderRow], rows: Iterable[T_BodyRow]): T_Table
 }
 
-trait QuotedCellsTabularConstructors extends TabularConstructors with QuotedCells {
+trait EnhancedRegexParsers extends RegexParsers {
 
-  def handle_quotedCell(s: String): T_QuotedCell
-
-  def handle_unquotedCell(s: String): T_UnquotedCell
+  implicit def regex(rg: (Regex, Int)): Parser[String] = new Parser[String] {
+    def apply(in: Input) = {
+      val (r, g) = rg
+      val source = in.source
+      val offset = in.offset
+      val start = handleWhiteSpace(source, offset)
+      (r findPrefixMatchOf (source.subSequence(start, source.length))) match {
+        case Some(matched) =>
+          Success(matched.group(g),
+                  in.drop(start + matched.end - offset))
+        case None =>
+          val found = if (start == source.length()) "end of source" else "`"+source.charAt(start)+"'"
+          Failure("string matching regex `"+r+"' expected but "+found+" found", in.drop(start - offset))
+      }
+    }
+  }
 
 }
 
-trait TabularParser extends TabularConstructors with RegexParsers {
+trait TabularParser extends TabularConstructors with EnhancedRegexParsers {
 
   override def skipWhitespace = false
 
@@ -65,38 +75,6 @@ trait TabularParser extends TabularConstructors with RegexParsers {
   }
 
 
-  implicit def regex(rg: (Regex, Int)): Parser[String] = new Parser[String] {
-    def apply(in: Input) = {
-      val (r, g) = rg
-      val source = in.source
-      val offset = in.offset
-      val start = handleWhiteSpace(source, offset)
-      (r findPrefixMatchOf (source.subSequence(start, source.length))) match {
-        case Some(matched) =>
-          Success(matched.group(g),
-                  in.drop(start + matched.end - offset))
-        case None =>
-          val found = if (start == source.length()) "end of source" else "`"+source.charAt(start)+"'"
-          Failure("string matching regex `"+r+"' expected but "+found+" found", in.drop(start - offset))
-      }
-    }
-  }
-
-}
-
-trait QuotedCellsTabularParser extends TabularParser with QuotedCellsTabularConstructors {
-
-  lazy val quotedStringWithoutQuotes: Parser[String] = (quote + "(([^" + quote + newline + "]|(" + quote + quote + "))*)" + quote).r -> 1 ^^
-    (_.replace(quote + quote, quote))
-
-  lazy val unquotedStringAsIs: Parser[String] = ("[^" + cellSep + quote + newline + "]*").r
-
-  lazy val quotedString: Parser[T_QuotedCell] = quotedStringWithoutQuotes ^^ handle_quotedCell
-
-  lazy val unquotedString: Parser[T_UnquotedCell] = unquotedStringAsIs ^^ handle_unquotedCell
-
-  lazy val cell = quotedString | unquotedString
-
 }
 
 trait TabularDestructors extends Tabular {
@@ -109,23 +87,23 @@ trait TabularDestructors extends Tabular {
 
 }
 
-trait QuotedCellsTabularDestructors extends TabularDestructors with QuotedCells {
+trait Renderer {
 
-  def decompose_quotedCell(cell: T_QuotedCell): String
-
-  def decompose_unquotedCell(cell: T_UnquotedCell): String
+  def out: Appendable
 
 }
 
-trait TabularRenderer extends TabularDestructors {
+trait CellRenderer extends Cellular with Renderer {
+
+  def render_cell(cell: T_Cell)
+
+}
+
+trait TabularRenderer extends CellRenderer with TabularDestructors {
 
   def nl() {
     out append newline
   }
-
-  def out: Appendable
-
-  def render_cell(cell: T_Cell)
 
   def render_cellSeparator() {
     out append cellSep
@@ -164,20 +142,4 @@ trait TabularRenderer extends TabularDestructors {
     for (h <- headers) render_headerRow(h)
     for (r <- body) render_bodyRow(r)
   }
-}
-
-trait QuotedCellsTabularRenderer extends TabularRenderer with QuotedCellsTabularDestructors {
-
-  def render_quotedCell(cell: T_QuotedCell) {
-    val s = decompose_quotedCell(cell)
-
-    out append quote append s append quote
-  }
-
-  def render_unquotedCell(cell: T_UnquotedCell) {
-    val s = decompose_unquotedCell(cell)
-
-    out append s
-  }
-
 }

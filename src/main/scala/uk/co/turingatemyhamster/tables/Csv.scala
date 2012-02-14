@@ -13,10 +13,10 @@ trait Csv extends QuotedCells {
   def quote = "\""
 }
 
-trait CsvTabularParser extends QuotedCellsTabularParser with Csv
+trait CsvTabularParser extends Csv with TabularParser with QuotedCellsParser
 
-class CsvTabularAstParser extends CsvTabularParser with TabularAstParser
+class CsvTabularAstParser extends CsvTabularParser with TabularAstBuilder with QuotedCellsAstBuilder
 
-trait CsvTabularRenderer extends QuotedCellsTabularRenderer with Csv
+trait CsvTabularRenderer extends Csv with QuotedCellsRenderer with TabularRenderer
 
-class CsvTabularAstRenderer(val out: Appendable) extends CsvTabularRenderer with TabularAstRenderer
+class CsvTabularAstRenderer(val out: Appendable) extends CsvTabularRenderer with TabularAstRenderer with QuotedCellsAstRenderer

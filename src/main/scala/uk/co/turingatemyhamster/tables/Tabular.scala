@@ -84,7 +84,7 @@ trait TabularParser extends TabularConstructors with RegexParsers {
 
 }
 
-trait QuotedCellsTabularTabularParser extends TabularParser with QuotedCellsTabularConstructors {
+trait QuotedCellsTabularParser extends TabularParser with QuotedCellsTabularConstructors {
 
   lazy val quotedStringWithoutQuotes: Parser[String] = (quote + "(([^" + quote + newline + "]|(" + quote + quote + "))*)" + quote).r -> 1 ^^
     (_.replace(quote + quote, quote))

@@ -57,7 +57,7 @@ trait TabularAstBuilder extends TabularAstConstructors {
     Table(header, rows)
 }
 
-trait TabularAstParser extends TabularAstBuilder with QuotedCellsTabularTabularParser
+trait TabularAstParser extends TabularAstBuilder with QuotedCellsTabularParser
 
 
 

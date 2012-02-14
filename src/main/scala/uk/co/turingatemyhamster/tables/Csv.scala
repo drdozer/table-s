@@ -2,11 +2,9 @@ package uk.co.turingatemyhamster.tables
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: nmrp3
- * Date: 01/02/12
- * Time: 15:03
- * To change this template use File | Settings | File Templates.
+ * CSV - comma-separated values.
+ *
+ * @author Matthew Pocock
  */
 
 trait Csv extends QuotedCells {
@@ -15,7 +13,7 @@ trait Csv extends QuotedCells {
   def quote = "\""
 }
 
-trait CsvTabularParser extends QuotedCellsTabularTabularParser with Csv
+trait CsvTabularParser extends QuotedCellsTabularParser with Csv
 
 class CsvTabularAstParser extends CsvTabularParser with TabularAstParser
 

@@ -60,17 +60,19 @@ trait TabularParser extends TabularConstructors with EnhancedRegexParsers {
 
   val nl: Parser[String] = newline
 
-  lazy val cells: Parser[List[T_Cell]] = repsep(cell, cellSep) <~ nl
+  lazy val cells: Parser[List[T_Cell]] = (repsep(cell, cellSep) <~ nl)
 
   lazy val headerRow: Parser[T_HeaderRow] = cells ^^ handle_headerRow
 
   lazy val bodyRow: Parser[T_BodyRow] = cells ^^ handle_bodyRow
 
-  lazy val withHeader: Parser[T_Table] = headerRow ~ bodyRow.* ^^ {
+  lazy val body: Parser[List[T_BodyRow]] = bodyRow.* <~ newline.?
+
+  lazy val withHeader: Parser[T_Table] = headerRow ~ body ^^ {
     case hr ~ brs => handle_table(Some(hr), brs)
   }
 
-  lazy val withoutHeader: Parser[T_Table] = bodyRow.* ^^ {
+  lazy val withoutHeader: Parser[T_Table] = body ^^ {
     case brs => handle_table(None, brs)
   }
 

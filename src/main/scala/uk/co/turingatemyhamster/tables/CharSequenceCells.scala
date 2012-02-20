@@ -18,7 +18,7 @@ trait CharSequenceCellsConstructors extends CharSequenceCells
 
 trait CharSequenceCellsParser extends CharSequenceCellsConstructors with EnhancedRegexParsers {
   
-  lazy val cell: Parser[CharSequence] = ("[^" + cellSep + "]*").r
+  lazy val cell: Parser[CharSequence] = ("[^" + cellSep + newline + "]*").r
   
 }
 
